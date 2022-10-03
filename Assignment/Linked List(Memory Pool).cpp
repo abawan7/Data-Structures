@@ -1,122 +1,85 @@
 #include <iostream>
 using namespace std;
 template <typename T>
-class list {
+class Singlylinkedlist {
 private:
-    struct node {
+    struct Node {
         T data;
-        node* next;
-        node() {
+        Node* next;
+        Node() {
             next = NULL;
         }
-        node(T a, node* temp = 0) {
+        Node(T a, Node* temp = 0) {
             data = a;
             next = temp;
         }
     };
-    node* head;
-    node* tail;
+    Node* head;
+    Node* tail;
     int size = 0;
-    class iterator {
+    class Iterator {
+    private:
+        Node* curr;
     public:
         friend class list;
-        iterator(node* ptr = NULL) {
-            iptr = ptr;
+        Iterator(Node* ptr = NULL) { //Iterator Constructor
+            curr = ptr;
         };
-        iterator& operator++() {
-            if (iptr) iptr = iptr->next;
+        Iterator& operator++() {
+            if (curr) curr = curr->next;
             return (*this);
         }
-        bool operator==(const iterator& l) const {
-            return (iptr == l.iptr);
+        bool operator==(const Iterator& l) const {
+            return (curr == l.curr);
         }
         T& operator*() {
-            return iptr->data;
+            return curr->data;
         }
-        bool operator!=(const iterator& l) const {
-            return (iptr != l.iptr);
+        bool operator!=(const Iterator& l) const {
+            return (curr != l.curr);
         }
-    private:
-        node* iptr;
     };
 public:
-    friend class memorysystem;
-    list() {
-        tail = new node();
-        head = new node();
+    friend class MMS;
+    Singlylinkedlist() {
+        tail = new Node();
+        head = new Node();
         head->next = tail;
         tail->next = NULL;
     }
-    list(list& obj) {
+    Singlylinkedlist(Singlylinkedlist& obj) { //Copy Constructor
         if (!obj.isEmpty()) {
-            node* tmp;
+            Node* tmp;
             for (tmp = obj.head->next; tmp->next != NULL; tmp = tmp->next) {
-                this->insertatend(tmp->data);
+                this->insertAtEnd(tmp->data);
             }
             this->size = obj.size;
         }
     }
-    void insertatstart(T val) {
-        head->next = new node(val, head->next);
+    void insertAtStart(T val) {
+        head->next = new Node(val, head->next);
         size++;
     }
-    void insertatend(T val) {
-        node* temp = head;
+    void insertAtEnd(T val) {
+        Node* temp = head;
         for (; temp->next != tail;) {
             temp = temp->next;
         }
-        temp->next = new node(val, temp->next);
+        temp->next = new Node(val, temp->next);
     }
-    void deletefromstart() {
+    void deleteFromStart() {
         if (!isEmpty()) {
-            node* tmp = head->next;
+            Node* tmp = head->next;
             head->next = head->next->next;
             delete tmp;
             size--;
         }
     }
-    void deletefromend() {
-        node* temp = head->next;
-        for (; temp->next->next != tail;) {
-            temp = temp->next;
-        }
-        delete temp->next;
-        temp->next = tail;
-        size--;
-    }
-    void print() {
-        node* tmp;
-        for (tmp = head->next; tmp->next != NULL; tmp = tmp->next) {
-            cout << tmp->data << " ";
-        }
-        cout << endl;
-    }
     bool isEmpty() {
         return(!head->next->next);
     }
-    void merge(list l1) {
-        node* tmp;
-        for (tmp = l1.head->next; tmp->next != NULL; tmp = tmp->next) {
-            this->insertatend(tmp->data);
-        }
-    }
-    int getSize() {
-        return size;
-    }
-    void sort() {
-        node* temp;
-        node* temporary;
-        for (temp = head->next; temp->next != NULL; temp = temp->next) {
-            for (temporary = temp->next; temporary->next != NULL; temporary = temporary->next) {
-                if (temp->data > temporary->data) {
-                    T temp = temp->data;
-                    temp->data = temporary->data;
-                    temporary->data = temp;
-                }
-            }
-        }
-    }
-    typedef iterator Iterator;
+
+    typedef Iterator Iterator;
     Iterator begin() {
         Iterator I(head->next);
         return I;
@@ -125,45 +88,45 @@ public:
         Iterator I(tail);
         return I;
     }
-    ~list() {
-        node* ptr = head->next;
+    ~Singlylinkedlist() {
+        Node* ptr = head->next;
         while (!isEmpty()) {
-            deletefromstart();
+            deleteFromStart();
         }
     }
 };
-class blocks{
+class Blocks{
 public:
-    int startingbyte;
-    int totalbytes;
-    blocks(int start_byte_ID, int total_bytes){
-        this->startingbyte = start_byte_ID;
-        this->totalbytes = total_bytes;
+    int start_byte;
+    int total_bytes;
+    Blocks(int start_byte_ID, int total_bytes){
+        this->start_byte = start_byte_ID;
+        this->total_bytes = total_bytes;
     }
-    blocks(blocks& obj){
-        this->startingbyte = obj.startingbyte;
-        this->totalbytes = obj.totalbytes;
+    Blocks(Blocks& obj){
+        this->start_byte = obj.start_byte;
+        this->total_bytes = obj.total_bytes;
     }
-    blocks operator=(blocks& obj){
-        this->startingbyte = obj.startingbyte;
-        this->totalbytes = obj.totalbytes;
+    Blocks operator=(Blocks& obj){
+        this->start_byte = obj.start_byte;
+        this->total_bytes = obj.total_bytes;
         return *this;
     }
     void print(){
-        cout << "Start byte ID: " << startingbyte << endl;
-        cout << "Total bytes: " << totalbytes << endl;
+        cout << "Start byte ID: " << start_byte << endl;
+        cout << "Total bytes: " << total_bytes << endl;
     }
 };
-class programs{
+class Program{
 public:
     int id;
     int size;
-    list<blocks*> blockList;
-    programs(int id, int size){
+    Singlylinkedlist<Blocks*> blockList;
+    Program(int id, int size){
         this->id = id;
         this->size = size;
     }
-    programs(programs& obj){
+    Program(Program& obj){
         this->id = obj.id;
         this->size = obj.size;
         this->blockList = obj.blockList;
@@ -172,26 +135,26 @@ public:
         cout << "Program id: " << id << endl;
         cout << "Program size: " << size << endl;
         cout << "In Block: " << endl;
-        for (list<blocks*>::Iterator I = blockList.begin(); I != blockList.end(); ++I){
-            cout << "Starting byte: " << (*I)->startingbyte << endl;
-            cout << "Total bytes: " << (*I)->totalbytes << endl;
+        for (Singlylinkedlist<Blocks*>::Iterator I = blockList.begin(); I != blockList.end(); ++I){
+            cout << "Starting byte: " << (*I)->start_byte << endl;
+            cout << "Total bytes: " << (*I)->total_bytes << endl;
         }
     }
 };
-class memorysystem{
+class MMS{
 public:
-    list<blocks*> pools;
-    list<programs*> pp;
+    Singlylinkedlist<Blocks*> pools;
+    Singlylinkedlist<Program*> pp;
     int sizeOfMemory;
     bool strategy;
-    memorysystem(int size = 1000, bool choice = 0){
+    MMS(int size = 1000, bool choice = 0){
         this->sizeOfMemory = size;
         this->strategy = choice;
 
-        blocks* tmp = new blocks(0, sizeOfMemory);
-        pools.insertatstart(tmp);
+        Blocks* tmp = new Blocks(0, sizeOfMemory);
+        pools.insertAtStart(tmp);
     }
-    void newprogram(int id, int size){
+    void newProgram(int id, int size){
         if (size > sizeOfMemory){
             cout << "Program too large to fit in memory" << endl;
             return;
@@ -205,22 +168,22 @@ public:
     }
     void firstFit(int id, int size){
         bool flag = false;
-        for (list<programs*>::Iterator dummy = pp.begin(); dummy != pp.end(); ++dummy){
+        for (Singlylinkedlist<Program*>::Iterator dummy = pp.begin(); dummy != pp.end(); ++dummy){
             if ((*dummy)->id == id){
                 flag = true;
                 break;
             }
         }
         if (flag == true){
-            for (list<programs*>::Iterator dummy = pp.begin(); dummy != pp.end(); ++dummy){
+            for (Singlylinkedlist<Program*>::Iterator dummy = pp.begin(); dummy != pp.end(); ++dummy){
                 if ((*dummy)->id == id){
-                    for (list<blocks*>::Iterator trash = pools.begin(); trash != pools.end(); ++trash){
-                        if ((*trash)->totalbytes >= size){
-                            (*dummy)->blockList.insertatend(new blocks((*trash)->startingbyte, size));
-                            (*trash)->startingbyte = (*trash)->startingbyte+ size;
-                            (*trash)->totalbytes = (*trash)->totalbytes- size;
-                            if ((*trash)->totalbytes == 0){
-                                pools.deletefromstart();
+                    for (Singlylinkedlist<Blocks*>::Iterator trash = pools.begin(); trash != pools.end(); ++trash){
+                        if ((*trash)->total_bytes >= size){
+                            (*dummy)->blockList.insertAtEnd(new Blocks((*trash)->start_byte, size));
+                            (*trash)->start_byte = (*trash)->start_byte + size;
+                            (*trash)->total_bytes = (*trash)->total_bytes - size;
+                            if ((*trash)->total_bytes == 0){
+                                pools.deleteFromStart();
                             }
                             break;
                         }
@@ -229,105 +192,105 @@ public:
             }
         }
         else{
-            programs* temp = new programs(id, size);
-            for (list<blocks*>::Iterator trash = pools.begin(); trash != pools.end(); ++trash){
-                if ((*trash)->totalbytes >= size){
-                    temp->blockList.insertatend(new blocks((*trash)->startingbyte, size));
-                    (*trash)->startingbyte += size;
-                    (*trash)->totalbytes -= size;
-                    if ((*trash)->totalbytes == 0){
-                        pools.deletefromstart();
+            Program* temp = new Program(id, size);
+            for (Singlylinkedlist<Blocks*>::Iterator trash = pools.begin(); trash != pools.end(); ++trash){
+                if ((*trash)->total_bytes >= size){
+                    temp->blockList.insertAtEnd(new Blocks((*trash)->start_byte, size));
+                    (*trash)->start_byte += size;
+                    (*trash)->total_bytes -= size;
+                    if ((*trash)->total_bytes == 0){
+                        pools.deleteFromStart();
                     }
                     break;
                 }
             }
-            pp.insertatend(temp);
+            pp.insertAtEnd(temp);
         }
     }
     void bestFit(int id, int size) {
         bool flag = false;
-        for (list<programs*>::Iterator dummy = pp.begin(); dummy != pp.end(); ++dummy){
+        for (Singlylinkedlist<Program*>::Iterator dummy = pp.begin(); dummy != pp.end(); ++dummy){
             if ((*dummy)->id == id){
                 flag = true;
                 break;
             }
         }
         if (flag == true){
-            for (list<programs*>::Iterator dummy = pp.begin(); dummy != pp.end(); ++dummy){
+            for (Singlylinkedlist<Program*>::Iterator dummy = pp.begin(); dummy != pp.end(); ++dummy){
                 if ((*dummy)->id == id){
                     int bestFit = 1000000000;
-                    list<blocks*>::Iterator bestFitBlock;
-                    for (list<blocks*>::Iterator J = pools.begin(); J != pools.end(); ++J){
-                        if ((*J)->totalbytes >= size && (*J)->totalbytes < bestFit){
-                            bestFit = (*J)->totalbytes;
+                    Singlylinkedlist<Blocks*>::Iterator bestFitBlock;
+                    for (Singlylinkedlist<Blocks*>::Iterator J = pools.begin(); J != pools.end(); ++J){
+                        if ((*J)->total_bytes >= size && (*J)->total_bytes < bestFit){
+                            bestFit = (*J)->total_bytes;
                             bestFitBlock = J;
                         }
                     }
-                    (*dummy)->blockList.insertatend(new blocks((*bestFitBlock)->startingbyte, size));
-                    (*bestFitBlock)->startingbyte += size;
-                    (*bestFitBlock)->totalbytes -= size;
-                    if ((*bestFitBlock)->totalbytes == 0){
-                        pools.deletefromstart();
+                    (*dummy)->blockList.insertAtEnd(new Blocks((*bestFitBlock)->start_byte, size));
+                    (*bestFitBlock)->start_byte += size;
+                    (*bestFitBlock)->total_bytes -= size;
+                    if ((*bestFitBlock)->total_bytes == 0){
+                        pools.deleteFromStart();
                     }
                     break;
                 }
             }
         }
         else{
-            programs* trash = new programs(id, size);
+            Program* trash = new Program(id, size);
             int bestFit = 1000000000;
-            list<blocks*>::Iterator bestFitBlock;
-            for (list<blocks*>::Iterator temp = pools.begin(); temp != pools.end(); ++temp){
-                if ((*temp)->totalbytes >= size && (*temp)->totalbytes < bestFit){
-                    bestFit = (*temp)->totalbytes;
+            Singlylinkedlist<Blocks*>::Iterator bestFitBlock;
+            for (Singlylinkedlist<Blocks*>::Iterator temp = pools.begin(); temp != pools.end(); ++temp){
+                if ((*temp)->total_bytes >= size && (*temp)->total_bytes < bestFit){
+                    bestFit = (*temp)->total_bytes;
                     bestFitBlock = temp;
                 }
             }
-            trash->blockList.insertatend(new blocks((*bestFitBlock)->startingbyte, size));
-            (*bestFitBlock)->startingbyte += size;
-            (*bestFitBlock)->totalbytes -= size;
-            if ((*bestFitBlock)->totalbytes == 0){
-                pools.deletefromstart();
+            trash->blockList.insertAtEnd(new Blocks((*bestFitBlock)->start_byte, size));
+            (*bestFitBlock)->start_byte += size;
+            (*bestFitBlock)->total_bytes -= size;
+            if ((*bestFitBlock)->total_bytes == 0){
+                pools.deleteFromStart();
             }
-            pp.insertatend(trash);
+            pp.insertAtEnd(trash);
         }
     }
-    void removeprog(int id){
-        for (list<programs*>::Iterator dummy = pp.begin(); dummy != pp.end(); ++dummy){
+    void removeProg(int id){
+        for (Singlylinkedlist<Program*>::Iterator dummy = pp.begin(); dummy != pp.end(); ++dummy){
             if ((*dummy)->id == id){
-                for (list<blocks*>::Iterator J = (*dummy)->blockList.begin(); J != (*dummy)->blockList.end(); ++J){
-                    pools.insertatend(new blocks((*J)->startingbyte, (*J)->totalbytes));
+                for (Singlylinkedlist<Blocks*>::Iterator J = (*dummy)->blockList.begin(); J != (*dummy)->blockList.end(); ++J){
+                    pools.insertAtEnd(new Blocks((*J)->start_byte, (*J)->total_bytes));
                 }
-                pp.deletefromstart();
+                pp.deleteFromStart();
                 break;
             }
         }
-        this->sortpool();
-        for (list<blocks*>::Iterator temp = pools.begin(); temp != pools.end(); ++temp){
-            if ((*temp)->totalbytes == 0){
-                pools.deletefromstart();
+        this->sortPool();
+        for (Singlylinkedlist<Blocks*>::Iterator temp = pools.begin(); temp != pools.end(); ++temp){
+            if ((*temp)->total_bytes == 0){
+                pools.deleteFromStart();
             }
         }
-        this->merging();
+        this->merge();
     }
-    void merging() {
-        for (list<blocks*>::Iterator dummy = pools.begin(); dummy != pools.end(); ++dummy){
-            list<blocks*>::Iterator temp = dummy;++temp;
+    void merge() {
+        for (Singlylinkedlist<Blocks*>::Iterator dummy = pools.begin(); dummy != pools.end(); ++dummy){
+            Singlylinkedlist<Blocks*>::Iterator temp = dummy;++temp;
             if (temp != pools.end()){
-                if ((*dummy)->startingbyte + (*dummy)->totalbytes == (*temp)->startingbyte){
-                    (*dummy)->totalbytes += (*temp)->totalbytes;
-                    pools.deletefromstart();
+                if ((*dummy)->start_byte + (*dummy)->total_bytes == (*temp)->start_byte){
+                    (*dummy)->total_bytes += (*temp)->total_bytes;
+                    pools.deleteFromStart();
                 }
             }
         }
     }
-    void sortpool() {
-        for (list<blocks*>::Iterator it = pools.begin(); it != pools.end(); ++it){
-            list<blocks*>::Iterator ite = it;
+    void sortPool() {
+        for (Singlylinkedlist<Blocks*>::Iterator it = pools.begin(); it != pools.end(); ++it){
+            Singlylinkedlist<Blocks*>::Iterator ite = it;
             ++ite;
             if (ite != pools.end()){
-                if ((*it)->startingbyte > (*ite)->startingbyte){
-                    blocks* tmp = *it;
+                if ((*it)->start_byte > (*ite)->start_byte){
+                    Blocks* tmp = *it;
                     *it = *ite;
                     *ite = tmp;
                 }
@@ -336,73 +299,73 @@ public:
     }
     void print(){
         cout << "Pool: " << endl;
-        for (list<blocks*>::Iterator temp = pools.begin(); temp != pools.end(); ++temp){
+        for (Singlylinkedlist<Blocks*>::Iterator temp = pools.begin(); temp != pools.end(); ++temp){
             (*temp)->print();
         }
         cout << endl;
         cout << "Programs: " << endl;
-        for (list<programs*>::Iterator temp = pp.begin(); temp != pp.end(); ++temp){
+        for (Singlylinkedlist<Program*>::Iterator temp = pp.begin(); temp != pp.end(); ++temp){
             (*temp)->print();
             cout << endl;
         }
     }
 };
 int main() {
-    list<int> l1; int id, memory;
-    memorysystem memman1(1000, 0);
+    Singlylinkedlist<int> l1; int id, memory;
+    MMS memman1(1000, 0);
     cout << "Enter first program id:" << endl;
     cin >> id;
     cout << "Enter required memory:" << endl;
     cin >> memory;
-    memman1.newprogram(id, memory);
+    memman1.newProgram(id, memory);
     cout << "Enter second program id:" << endl;
     cin >> id;
     cout << "Enter required memory:" << endl;
     cin >> memory;
-    memman1.newprogram(id, memory);
+    memman1.newProgram(id, memory);
     cout << "Enter third program id:" << endl;
     cin >> id;
     cout << "Enter required memory:" << endl;
     cin >> memory;
-    memman1.newprogram(id, memory);
+    memman1.newProgram(id, memory);
     cout << "Enter fourth program id:" << endl;
     cin >> id;
     cout << "Enter required memory:" << endl;
     cin >> memory;
-    memman1.newprogram(id, memory);
+    memman1.newProgram(id, memory);
     cout << "According to the first fit:" << endl;
     cout << "First: " << endl;
     memman1.print();
     cout << endl;
-    memman1.removeprog(1);
+    memman1.removeProg(1);
     cout << "Second: " << endl;
     memman1.print();
     cout << endl;
     cout << "Now, according to the best fit:" << endl;
-    memorysystem memman2(1000, 1);
+    MMS memman2(1000, 1);
     cout << "Enter first program id:" << endl;
     cin >> id;
     cout << "Enter required memory:" << endl;
     cin >> memory;
-    memman2.newprogram(id, memory);
+    memman2.newProgram(id, memory);
     cout << "Enter second program id:" << endl;
     cin >> id;
     cout << "Enter required memory:" << endl;
     cin >> memory;
-    memman2.newprogram(id, memory);
+    memman2.newProgram(id, memory);
     cout << "Enter third program id:" << endl;
     cin >> id;
     cout << "Enter required memory:" << endl;
     cin >> memory;
-    memman2.newprogram(id, memory);
+    memman2.newProgram(id, memory);
     cout << "Enter fourth program id:" << endl;
     cin >> id;
     cout << "Enter required memory:" << endl;
     cin >> memory;
-    memman2.newprogram(id, memory);
+    memman2.newProgram(id, memory);
     cout << "First: " << endl;
     memman2.print();
-    memman2.removeprog(1);
+    memman2.removeProg(1);
     cout << "Second: " << endl;
     memman2.print();
     return 0;
