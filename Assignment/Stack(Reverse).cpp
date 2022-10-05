@@ -1,4 +1,4 @@
-#include <iostream>
+#include "iostream"
 using namespace std;
 template<class T>
 class Stack {
@@ -48,6 +48,7 @@ public:
             cout << "Stack is Empty!" << endl;
         else {
             top = top - 1;
+            max_size--;
             return arr[top + 1];
         }
     }
@@ -57,3 +58,65 @@ public:
             int temp = pop();
             display();
             cout << temp << " ";
+            cout <<"====" <<max_size << "====" << endl;
+            push(temp);
+        }
+    }
+
+    void insertAtBottom(T item) {
+        if (isEmpty()) {
+            push(item);
+        }
+        else {
+            int Top = pop();
+            insertAtBottom(item);
+            push(Top);
+        }
+    }
+
+    void reverse() {
+        if (!isEmpty()) {
+            int Top = pop();
+            reverse();
+            insertAtBottom(Top);
+        }
+    }
+
+};
+
+int main()
+{
+    int size;
+    cout << "enter size :";
+    cin >> size;
+    Stack<int> obj(size);
+    int element;
+    cout << "enter the element you want to insert and press -1 to stop inserting:";
+    cin >> element;
+    while (element != -1)
+    {
+        obj.push(element);
+        cout << "enter the element you want to insert :";
+        cin >> element;
+    }
+    cout << "Original Stack\n" << endl;
+    obj.display();
+    obj.reverse();
+    cout << "\nReversed Stack\n" << endl;
+    obj.display();
+    cout << "===============" << endl;
+    obj.pop();
+    obj.display();
+    cout << "===============" << endl;
+    obj.pop();
+    obj.display();
+    cout << "===============" << endl;
+    obj.pop();
+    obj.display();
+    cout << "===============" << endl;
+    obj.pop();
+    obj.display();
+    cout << "===============" << endl;
+
+    return 0;
+}
