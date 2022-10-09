@@ -22,7 +22,7 @@ public:
     }
 
     bool isFull(){
-            return (size == max_size);
+        return (size == max_size);
     }
 
     bool isEmpty()
