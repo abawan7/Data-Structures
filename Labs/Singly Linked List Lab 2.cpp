@@ -62,7 +62,7 @@ public:
 			current = current->next;
 		}
 	}
-	void printrev() const {
+	void reverse() const {
 		int count = 1;
 		node*temp = head;
 		while (temp->next != NULL) {
@@ -84,24 +84,24 @@ public:
 };
 int main() {
 	list<int> l1;int value;
-	l1.insertatstart(4);
+	l1.insertatstart(2);
+	l1.insertatstart(6);
 	l1.insertatstart(7);
+	l1.insertatend(9);
+	l1.insertatstart(7);
+	l1.insertatstart(8);
 	l1.insertatstart(9);
-	l1.insertatend(2);
-	l1.insertatstart(3);
-	l1.insertatstart(7);
-	l1.insertatstart(1);
 	l1.print();
 	cout << "\nEnter the value you want to search: ";
 	cin >> value;
-	while (value != 0) {
+	while (value != -1) {
 		if (l1.search(value)) {
 			cout << "'" << value << "'" << " exists." << endl;
 		}
 		else {
 			cout << "'" << value << "'" << " does not exist." << endl;
 		}
-		cout << "\nEnter the value you want to search or press '0' to stop: ";
+		cout << "\nEnter the value you want to search or press '-1' to stop: ";
 		cin >> value;
 	}
 	l1.printrev();
