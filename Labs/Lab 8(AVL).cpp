@@ -72,16 +72,7 @@ public:
         y->height = 1 + Max(getH(y->left), getH(y->right));
         x = y;
     }
-    void doublerotateleft(ANode*& x)
-    {
-        rotateRight(x->right);
-        rotateLeft(x);
-    }
-    void doublerotateright(ANode*& x)
-    {
-        rotateLeft(x->left);
-        rotateRight(x);
-    }
+
     int getBalance(ANode* r) {
         if (r == nullptr) {
             return 0;
@@ -143,25 +134,13 @@ public:
         if (r)
         {
             inorder(r->left);
-            cout << r->data;
+            cout << r->data << " ";
             inorder(r->right);
 
         }
 
     }
-    void postorder(ANode* r)
-    {
-        if (r)
-        {
-            postorder(r->left);
-            postorder(r->right);
-            cout << r->data;
 
-        }
-        else
-            return;
-
-    }
     void preorder(ANode* r)
     {
         if (r)
@@ -174,51 +153,6 @@ public:
         }
 
     }
-    bool isAVL(ANode* r)
-    {
-        if (r)
-        {
-
-            static bool flag = true;
-            isAVL(r->left);
-            isAVL(r->right);
-            if (getH(r->left) - getH(r->right) > 1 || getH(r->left) - getH(r->right) < (-1))
-            {
-                if (flag)
-                {
-                    flag = false;
-                }
-            }
-            return flag;
-        }
-        else {
-            return true;
-        }
-    }
-
-    T MinTerm(ANode* r) {
-        if (r->left != nullptr)
-            MinTerm(r->left);
-        else if (r->left == nullptr)
-            return r->data;
-    }
-
-    T MinTerm() {
-        return MinTerm(root);
-    }
-
-
-    T SMinTerm(ANode* r) {
-        if (r->left->left != nullptr)
-            SMinTerm(r->left);
-        else if (r->left->left == nullptr)
-            return r->data;
-    }
-
-    T SMinTerm() {
-        return SMinTerm(root);
-    }
-
 
     bool search(ANode* r, int key) {
         if (r != nullptr) {
@@ -327,28 +261,57 @@ public:
 
 
 };
+
 int main()
 {
-    ATree<int>AVL;
-    AVL.Insert(7);
-    AVL.Insert(6);
-    AVL.Insert(5);
-    AVL.Insert(4);
-    AVL.Insert(3);
-    AVL.Insert(2);
-    AVL.Insert(1);
-    AVL.postorder(AVL.getR());
-    cout << endl;
-    AVL.inorder(AVL.getR());
-    cout << endl;
-    AVL.preorder(AVL.getR());
-    cout << endl << AVL.MinTerm() << endl;
-    AVL.SMinTerm();
-    cout << endl;
-    if (AVL.search(9)) cout << "found" << endl;
-    else cout << "not found" << endl;
-    AVL.Delete(3);
-    AVL.inorder(AVL.getR());
-    return 0;
+    ATree<int> AVL;
 
+    // Inserting values into the tree
+    AVL.Insert(10);
+    cout << "Tree after inserting 10: ";
+    AVL.inorder(AVL.getR());
+    cout << endl;
+
+    AVL.Insert(20);
+    cout << "Tree after inserting 20: ";
+    AVL.inorder(AVL.getR());
+    cout << endl;
+
+    AVL.Insert(30);
+    cout << "Tree after inserting 30: ";
+    AVL.inorder(AVL.getR());
+    cout << endl;
+
+    AVL.Insert(40);
+    cout << "Tree after inserting 40: ";
+    AVL.inorder(AVL.getR());
+    cout << endl;
+
+    AVL.Insert(50);
+    cout << "Tree after inserting 50: ";
+    AVL.inorder(AVL.getR());
+    cout << endl;
+
+    AVL.Insert(25);
+    cout << "Tree after inserting 25: ";
+    AVL.inorder(AVL.getR());
+    cout << endl;
+
+    AVL.Insert(60);
+    cout << "Tree after inserting 60: ";
+    AVL.inorder(AVL.getR());
+    cout << endl;
+
+    // Deleting node with value 25
+    AVL.Delete(25);
+    cout << "Tree after deleting 25: ";
+    AVL.inorder(AVL.getR());
+    cout << endl;
+
+    // Calculating the height of the tree
+    int treeHeight = AVL.getH(AVL.getR());
+    cout << "Height of the tree: " << treeHeight << endl;
+
+    return 0;
 }
+
